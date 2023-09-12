@@ -324,7 +324,7 @@ const filterHandler = (event) => {
   //WORKS ONCE THEN DOESNT FILTER ANYMORE
   event.preventDefault();
   // console.log(event)
-  
+
 }
 
 /*
@@ -347,8 +347,8 @@ const uniqueCities = contacts.reduce((acc, obj) => {
 
 function loadCities(contacts) {
   //create array of cities with <option> element for each
-  if (contacts) {
-    const optionCities = ['<option value="0">-- Select a city --</option>'];
+  const optionCities = ['<option value="0">-- Select a city --</option>'];
+  if (contacts.length) {
     
     optionCities.push(uniqueCities.map((cityName) => {
       return `<option value="${cityName}">${cityName}</option>`
@@ -357,7 +357,9 @@ function loadCities(contacts) {
     const filterOptions = document.querySelector("#filterOptions");
   
     filterOptions.innerHTML = optionCities;
-  };
+  } else {
+    filterOptions.innerHTML = optionCities;
+  }
 };
 
 /*
