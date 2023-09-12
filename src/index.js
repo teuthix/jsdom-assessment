@@ -299,6 +299,7 @@ function render(contacts) {
   Do NOT modify the original array.
 */
 function filterByCity(city) {
+  // console.log(city)
   if(city == "0") {
     return render(contacts);
   }else{
@@ -314,13 +315,16 @@ If the value is "0" call `render()` with the complete contacts list.
 If the value is not "0" call `filterByCity()` passing the value selected by
 the user. Then call `render()` with the filtered list.
 */
+const option = document.querySelector("#filterOptions")
+option.addEventListener("change", (event) => {
+  // console.log(event.target.value)
+  return filterByCity(event.target.value);
+});
 const filterHandler = (event) => {
   //WORKS ONCE THEN DOESNT FILTER ANYMORE
   event.preventDefault();
-  const option = document.querySelector("#filterOptions")
-  option.addEventListener("change", (event) => {
-    return filterByCity(event.target.value);
-  });
+  // console.log(event)
+  
 }
 
 /*
@@ -388,9 +392,8 @@ const deleteButtonHandler = (event) => {
 Perform all startup tasks here. Use this function to attach the 
 required event listeners, call loadCities() then call render().
 */
+option.addEventListener("click", filterHandler);
 function main() {
-  const select = document.querySelector("select");
-  select.addEventListener("click", filterHandler);
   
   const deleteBtn = document.querySelector("#contacts");
   deleteBtn.addEventListener("click", deleteButtonHandler);
