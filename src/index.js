@@ -268,7 +268,7 @@ function renderContact(contact) {
     <div class="address">
       <div class="suite">${contact.address.suite}</div>
       <div class="street">${contact.address.street}</div>
-      <div class="city">${contact.city}</div>
+      <div class="city">${contact.address.city}</div>
     </div>
     <div class="company">
       <div class="label">Works at</div>
@@ -298,56 +298,76 @@ function render(contacts) {
   Return a new array containing the filtered list. 
   Do NOT modify the original array.
 */
-const filterByCity = (city) => {
-
+function filterByCity(city) {
+  if(city == "0") {
+    return render(contacts);
+  }else{
+    const filteredContacts = contacts.filter((citie) => citie.address.city === city);
+    return render(filteredContacts);
+  }
 }
 
 /*
-  Add an `change` event listener to the `filterOptions` select element.
-  On `change` get the value selected by the user. 
-  If the value is "0" call `render()` with the complete contacts list.
-  If the value is not "0" call `filterByCity()` passing the value selected by
-  the user. Then call `render()` with the filtered list.
+Add an `change` event listener to the `filterOptions` select element.
+On `change` get the value selected by the user. 
+If the value is "0" call `render()` with the complete contacts list.
+If the value is not "0" call `filterByCity()` passing the value selected by
+the user. Then call `render()` with the filtered list.
 */
- const filterHandler = () => {
+const filterHandler = (event) => {
+  //WORKS ONCE THEN DOESNT FILTER ANYMORE
   event.preventDefault();
-
-  contacts.filter(filterByCity);
+  const option = document.querySelector("#filterOptions")
+  option.addEventListener("change", (event) => {
+    return filterByCity(event.target.value);
+  });
 }
 
 /*
-  Accepts an array of contacts.
-  Populate the select with id `filterOptions` with the list of cities.
-  Create a list of cities from the contacts array with no duplicates then
-  add an `<option>` element for each city to the select.
+Accepts an array of contacts.
+Populate the select with id `filterOptions` with the list of cities.
+Create a list of cities from the contacts array with no duplicates then
+add an `<option>` element for each city to the select.
 */
+
+
+//find all unique cities in contact list +++
+//returns array of objects but only one of each city
+
+const uniqueCities = contacts.reduce((acc, obj) => {
+  if(!acc.includes(obj.address.city)) {
+    acc.push(obj.address.city);
+  }
+  return acc;
+}, []);
+
 function loadCities(contacts) {
-  //find all unique cities in contact list +++
-  //returns array of objects but only one of each city
-  
-  const uniqueCities = contacts.reduce((acc, obj) => {
-    if(!acc.includes(obj.address.city)) {
-      acc.push(obj.address.city);
-    }
-    return acc;
-  }, []);
-
   //create array of cities with <option> element for each
-  const optionCities = ['<option value="0">-- Select a city --</option>'];
+  if (contacts) {
+    const optionCities = ['<option value="0">-- Select a city --</option>'];
+    
+    optionCities.push(uniqueCities.map((cityName) => {
+      return `<option value="${cityName}">${cityName}</option>`
+    }));
+    
+    const filterOptions = document.querySelector("#filterOptions");
   
-  optionCities.push(uniqueCities.map((cityName) => {
-    return `<option value="${cityName}">${cityName}</option>`
-  }));
-  
-  const filterOptions = document.querySelector("#filterOptions");
-
-  filterOptions.innerHTML = optionCities;
+    filterOptions.innerHTML = optionCities;
+  };
 };
 
 /*
   Remove the contact from the contact list with the given id.
 */
-function deleteContact(id) {}
+function deleteContact(id) {
+  const nonDeleted = [];
+  contacts.filter((contact) => {
+    if(contact.id !== id) {
+      nonDeleted.push(contact);
+    };
+  });
+  return render(nonDeleted);
+};
 
 /*
   Add a `click` event handler to the `deleteBtn` elements.
@@ -355,13 +375,26 @@ function deleteContact(id) {}
   corresponding `data-id` then call `deleteContact()` and re-render 
   the list.
 */
-function deleteButtonHandler() {}
+//need to get id to pass into deleteContact
+const deleteButtonHandler = (event) => {
+  event.preventDefault();
+  console.log(event.target.parentNode);
+  // if(event.target == "button") {
+  //   return deleteContact(event.target)
+  // }
+}
 
 /*
-  Perform all startup tasks here. Use this function to attach the 
-  required event listeners, call loadCities() then call render().
+Perform all startup tasks here. Use this function to attach the 
+required event listeners, call loadCities() then call render().
 */
 function main() {
+  const select = document.querySelector("select");
+  select.addEventListener("click", filterHandler);
+  
+  const deleteBtn = document.querySelector("#contacts");
+  deleteBtn.addEventListener("click", deleteButtonHandler);
+
   render(contacts);
 }
 
