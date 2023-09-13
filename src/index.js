@@ -299,12 +299,15 @@ function render(contacts) {
   Do NOT modify the original array.
 */
 function filterByCity(city) {
-  // console.log(city)
   if(city == "0") {
     return render(contacts);
-  }else{
+  }
+  if(contacts.length > 0){
     const filteredContacts = contacts.filter((citie) => citie.address.city === city);
     return render(filteredContacts);
+  }
+  else{
+    return [];
   }
 }
 
@@ -321,10 +324,8 @@ option.addEventListener("change", (event) => {
   return filterByCity(event.target.value);
 });
 const filterHandler = (event) => {
-  //WORKS ONCE THEN DOESNT FILTER ANYMORE
   event.preventDefault();
   // console.log(event)
-
 }
 
 /*
@@ -359,6 +360,7 @@ function loadCities(contacts) {
     filterOptions.innerHTML = optionCities;
   } else {
     filterOptions.innerHTML = optionCities;
+    return [];
   }
 };
 
@@ -366,13 +368,19 @@ function loadCities(contacts) {
   Remove the contact from the contact list with the given id.
 */
 function deleteContact(id) {
-  const nonDeleted = [];
-  contacts.filter((contact) => {
-    if(contact.id !== id) {
-      nonDeleted.push(contact);
-    };
-  });
-  return render(nonDeleted);
+  if(id) {
+    const nonDeleted = [];
+    // console.log(id)
+    contacts.filter((contact) => {
+      if(contact.id != id) {
+        nonDeleted.push(contact);
+      };
+    });
+    console.log(nonDeleted)
+    return render(nonDeleted);
+  } else {
+    return render(contacts)
+  }
 };
 
 /*
@@ -383,19 +391,22 @@ function deleteContact(id) {
 */
 //need to get id to pass into deleteContact
 const deleteButtonHandler = (event) => {
-  event.preventDefault();
-  console.log(event.target.parentNode);
-  // if(event.target == "button") {
-  //   return deleteContact(event.target)
-  // }
-}
+  if(event.target.classList.contains("deleteBtn")){
+    event.preventDefault();
+    // console.log(event.target);
+    const card = event.target.parentNode;
+    const idFinder = card.dataset.id;
+    return deleteContact(idFinder);
+    // console.log(idFinder);
+  }
+};
 
 /*
 Perform all startup tasks here. Use this function to attach the 
 required event listeners, call loadCities() then call render().
 */
-option.addEventListener("click", filterHandler);
 function main() {
+  option.addEventListener("click", filterHandler);
   
   const deleteBtn = document.querySelector("#contacts");
   deleteBtn.addEventListener("click", deleteButtonHandler);
