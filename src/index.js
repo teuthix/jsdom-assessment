@@ -300,11 +300,11 @@ function render(contacts) {
 */
 function filterByCity(city) {
   if(city == "0") {
-    return render(contacts);
+    return contacts;
   }
   if(contacts.length > 0){
     const filteredContacts = contacts.filter((citie) => citie.address.city === city);
-    return render(filteredContacts);
+    return filteredContacts;
   }
   else{
     return [];
@@ -321,7 +321,7 @@ the user. Then call `render()` with the filtered list.
 const option = document.querySelector("#filterOptions")
 option.addEventListener("change", (event) => {
   // console.log(event.target.value)
-  return filterByCity(event.target.value);
+  return render(filterByCity(event.target.value));
 });
 const filterHandler = (event) => {
   event.preventDefault();
@@ -371,13 +371,9 @@ function deleteContact(id) {
   if(id) {
     const nonDeleted = [];
     // console.log(id)
-    contacts.filter((contact) => {
-      if(contact.id != id) {
-        nonDeleted.push(contact);
-      };
-    });
-    console.log(nonDeleted)
-    return render(nonDeleted);
+    contacts = contacts.filter((contact) => contact.id != id);
+    // console.log(nonDeleted)
+    return render(contacts);
   } else {
     return render(contacts)
   }
